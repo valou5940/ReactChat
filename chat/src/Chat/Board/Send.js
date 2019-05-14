@@ -14,7 +14,7 @@ export class Send extends React.Component {
   }
 
   sendMessage() {
-    if (this.state.message.text != '' && this.state.message.text != undefined) {
+    if (this.state.message.text !== '' && this.state.message.text !== undefined) {
       console.log("message envoyé " + this.state.message.text)
       this.props.onSendMessage(this.props.user + ': ' + this.state.message.text );
       this.setState({
