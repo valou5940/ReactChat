@@ -1,5 +1,4 @@
 import React from 'react';
-
 export class MessagesBoard extends React.Component {
   constructor(props) {
     super(props);
@@ -12,9 +11,12 @@ export class MessagesBoard extends React.Component {
         <ul>
           {Array.from(this.props.displayedMsg).map((message, index) => {
             return (
-              <li className="messages-list" key={index}>
-                {message.message} from {message.user}
+
+              <li className={message.user === this.props.user ? "messages-droite" : "messages-gauche" } key={index}>
+                {message.user !== this.props.user ? message.user + ": " +  message.message   : message.message}
+
               </li>
+
             );
           })}
         </ul>
@@ -22,3 +24,5 @@ export class MessagesBoard extends React.Component {
     );
   }
 }
+
+

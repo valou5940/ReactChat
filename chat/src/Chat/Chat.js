@@ -71,15 +71,18 @@ export class Chat extends React.Component {
           <div className="board">
             <div className="row messages-wrapper">
               <div className="messages col-10">
-                <MessagesBoard displayedMsg={this.state.messagesArray} />
+                <MessagesBoard displayedMsg={this.state.messagesArray}
+                               user={this.state.nickname}/>
               </div>
               <div className="users col-2">
-                <Users users={this.state.users} user={this.state.user} />
+                <Users users={this.state.users}
+                       user={this.state.user} />
               </div>
             </div>
             <div className="row send-wrapper">
               <div className="send col-10">
-                <Send onSendMessage={this.handleMessage} />
+                <Send onSendMessage={this.handleMessage}
+                       />
               </div>
             </div>
           </div>

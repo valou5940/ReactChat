@@ -11,10 +11,13 @@ export class Send extends React.Component {
   }
 
   sendMessage() {
+   if(this.state.message !== '' && this.state.message !== undefined){
+
     this.props.onSendMessage(this.state.message);
     this.setState({
       message: ''
     });
+   }
   }
 
   handleMessage(evt) {
