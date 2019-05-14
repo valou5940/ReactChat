@@ -12,9 +12,9 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/chat/public/index.html`);
 });
 
+let users = [];
 io.on('connection', socket => {
-  let users = [];
-
+  let currentUser;
   socket.emit('user connected');
 
   socket.on('chatMessage', message => {
@@ -22,12 +22,18 @@ io.on('connection', socket => {
   });
 
   socket.on('login', user => {
+    // io.emit('user-connection', user);
+    currentUser = user;
     users = [...users, user];
-    io.emit('login', users);
+    io.emit('users-list', users);
   });
 
   socket.on('disconnect', () => {
-    console.log('client disconnected');
+    if (users.indexOf(currentUser) !== -1) {
+      users.splice(users.indexOf(currentUser), 1);
+    }
+    console.log(currentUser + ' disconnected');
+    io.emit('users-list', users);
   });
 });
 
