@@ -28,11 +28,9 @@ export class Chat extends React.Component {
       this.setState({ messageInput: message });
     });
 
-    this.state.socket.on('login', users => {
+    this.state.socket.on('users-list', users => {
       console.log(users);
-      this.setState(prevState => ({
-        users: [...prevState.users, users]
-      }));
+      this.setState({ users: users });
     });
   }
 
