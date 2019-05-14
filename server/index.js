@@ -19,6 +19,7 @@ io.on('connection', socket => {
   socket.emit('user connected');
 
   socket.on('send-message', message => {
+    console.log(message)
     messages = [...messages, message];
     io.emit('dispatch-messages', messages);
   });
