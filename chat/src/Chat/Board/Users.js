@@ -3,7 +3,6 @@ import React from 'react';
 export class Users extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.users);
   }
 
   render() {

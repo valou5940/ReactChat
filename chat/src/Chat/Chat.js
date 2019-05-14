@@ -2,7 +2,6 @@ import React from 'react';
 import { MessagesBoard } from './Board/MessagesBoard';
 import { Send } from './Board/Send';
 import socketIOClient from 'socket.io-client';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Connection } from './Login/Connection';
 import { Users } from './Board/Users';
 
@@ -58,20 +57,20 @@ export class Chat extends React.Component {
 
   render() {
     return (
-      <div className="wrapper container">
+      <div className="wrapper container-fluid">
         {!this.state.logged && <Connection onLogin={this.handleLogin.bind(this)} />}
         {this.state.logged && (
           <div className="board">
-            <div className="row">
-              <div className="messages col-8">
+            <div className="row messages-wrapper">
+              <div className="messages col-10">
                 <MessagesBoard displayedMsg={this.state.messagesArray} />
               </div>
-              <div className="users col-4">
+              <div className="users col-2">
                 <Users users={this.state.users} user={this.state.user} />
               </div>
             </div>
-            <div className="row">
-              <div className="send col-8">
+            <div className="row send-wrapper">
+              <div className="send col-10">
                 <Send onSendMessage={this.handleMessage} />
               </div>
             </div>

@@ -1,4 +1,4 @@
-body {
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -8,8 +8,37 @@ body {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
+} */
 
 .users {
   justify-content: right;
+}
+
+.send-wrapper {
+  bottom: 0;
+  width: 100%;
+  position: fixed;
+}
+
+/* .messages {
+  position: absolute;
+} */
+
+.messages-wrapper {
+  width: 100%;
+}
+
+ul li {
+  word-break: break-all;
+  white-space: normal;
+}
+
+.wrapper {
+  max-height: 800px;
+  height: 100%;
+  width: 100%;
+}
+
+.message-typing {
+  width: 90%;
 }

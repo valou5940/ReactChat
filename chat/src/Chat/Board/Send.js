@@ -12,6 +12,9 @@ export class Send extends React.Component {
 
   sendMessage() {
     this.props.onSendMessage(this.state.message);
+    this.setState({
+      message: ''
+    });
   }
 
   handleMessage(evt) {
@@ -23,7 +26,12 @@ export class Send extends React.Component {
   render() {
     return (
       <div>
-        <input type="text" placeholder="type message here..." onChange={this.handleMessage} />
+        <input
+          className="message-typing"
+          type="text"
+          placeholder="type message here..."
+          onChange={this.handleMessage}
+        />
         <input type="submit" onClick={this.sendMessage} value="Send" />
       </div>
     );
