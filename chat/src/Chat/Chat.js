@@ -52,6 +52,7 @@ export class Chat extends React.Component {
 
   handleMessage(message) {
     console.log(message);
+
     this.state.socket.emit('send-message', message);
   }
 
@@ -71,7 +72,7 @@ export class Chat extends React.Component {
             </div>
             <div className="row send-wrapper">
               <div className="send col-10">
-                <Send onSendMessage={this.handleMessage} />
+                <Send onSendMessage={this.handleMessage} user = {this.state.nickname}/>
               </div>
             </div>
           </div>
