@@ -30,6 +30,7 @@ export class Send extends React.Component {
           className="message-typing"
           type="text"
           placeholder="type message here..."
+          value = {this.state.message}
           onChange={this.handleMessage}
         />
         <input type="submit" onClick={this.sendMessage} value="Send" />
