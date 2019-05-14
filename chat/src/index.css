@@ -31,6 +31,7 @@ code {
 ul li {
   word-break: break-all;
   white-space: normal;
+  list-style-type: none;
 }
 
 .wrapper {

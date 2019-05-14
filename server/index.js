@@ -16,11 +16,12 @@ let users = [];
 let messages = [];
 io.on('connection', socket => {
   let currentUser;
-  socket.emit('user connected');
+  // socket.emit('user connected');
 
   socket.on('send-message', message => {
-    messages = [...messages, message];
-    io.emit('dispatch-messages', messages);
+    let messageToDispatch = { message: message, user: currentUser };
+    messages = [...messages, messageToDispatch];
+    io.emit('dispatch-message', messageToDispatch);
   });
 
   socket.on('login', user => {
@@ -29,6 +30,7 @@ io.on('connection', socket => {
     users = [...users, user];
     io.emit('user-connected', `${user} connected`);
     io.emit('users-list', users);
+    io.emit('dispatch-messages', messages);
   });
 
   socket.on('disconnect', () => {

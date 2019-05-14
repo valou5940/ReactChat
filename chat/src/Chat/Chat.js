@@ -24,7 +24,15 @@ export class Chat extends React.Component {
 
   componentDidMount() {
     this.state.socket.on('dispatch-messages', messages => {
+      console.log(messages);
       this.setState({ messagesArray: messages });
+    });
+
+    this.state.socket.on('dispatch-message', message => {
+      console.log(message);
+      this.setState(prevState => ({
+        messagesArray: [...prevState.messagesArray, message]
+      }));
     });
 
     this.state.socket.on('users-list', users => {

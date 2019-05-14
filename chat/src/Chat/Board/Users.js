@@ -9,10 +9,10 @@ export class Users extends React.Component {
     const users = [...this.props.users];
     return (
       <div>
-        <h3>Users connected :</h3>
+        <h5>Users connected :</h5>
         <ul>
-          {users.map((nickname, indx) => {
-            return <li key={indx}>{nickname}</li>;
+          {users.map((user, index) => {
+            return <li key={index}>{user}</li>;
           })}
         </ul>
         <div className="connect-event">
