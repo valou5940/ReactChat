@@ -25,7 +25,7 @@ export class Connection extends React.Component {
     return (
       <div>
         <input type="text" placeholder="choose a nickname" onChange={this.handleLogin} />
-        <input type="submit" onClick={this.login} />
+        <input type="submit" onClick={this.login} value="Connect" />
       </div>
     );
   }

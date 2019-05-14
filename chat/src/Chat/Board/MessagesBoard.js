@@ -9,7 +9,9 @@ export class MessagesBoard extends React.Component {
     return (
       <div>
         <ul>
-          <li>{this.props.displayedMsg}</li>
+          {this.props.displayedMsg.map((message, index) => {
+            return <li key={index}>{message}</li>;
+          })}
         </ul>
       </div>
     );

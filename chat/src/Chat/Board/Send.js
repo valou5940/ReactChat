@@ -23,13 +23,8 @@ export class Send extends React.Component {
   render() {
     return (
       <div>
-        <input
-          type="text"
-          ref="messageRef"
-          placeholder="type message here..."
-          onChange={this.handleMessage}
-        />
-        <input type="submit" onClick={this.sendMessage} />
+        <input type="text" placeholder="type message here..." onChange={this.handleMessage} />
+        <input type="submit" onClick={this.sendMessage} value="Send" />
       </div>
     );
   }

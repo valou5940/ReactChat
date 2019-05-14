@@ -13,18 +13,21 @@ app.get('/', (req, res) => {
 });
 
 let users = [];
+let messages = [];
 io.on('connection', socket => {
   let currentUser;
   socket.emit('user connected');
 
-  socket.on('chatMessage', message => {
-    io.emit('chatMessage', message);
+  socket.on('send-message', message => {
+    messages = [...messages, message];
+    io.emit('dispatch-messages', messages);
   });
 
   socket.on('login', user => {
     // io.emit('user-connection', user);
     currentUser = user;
     users = [...users, user];
+    io.emit('user-connected', `${user} connected`);
     io.emit('users-list', users);
   });
 
@@ -32,8 +35,11 @@ io.on('connection', socket => {
     if (users.indexOf(currentUser) !== -1) {
       users.splice(users.indexOf(currentUser), 1);
     }
+    io.emit('user-disconnected', `${currentUser} disconnected`);
     console.log(currentUser + ' disconnected');
-    io.emit('users-list', users);
+    if (users.length > 0) {
+      io.emit('users-list', users);
+    }
   });
 });
 
