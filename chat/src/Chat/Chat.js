@@ -4,6 +4,10 @@ import { Send } from './Board/Send';
 import socketIOClient from 'socket.io-client';
 import { Connection } from './Login/Connection';
 import { Users } from './Board/Users';
+import { Smile } from 'react-feather';
+import { Picker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
+
 
 export class Chat extends React.Component {
   constructor(props) {
@@ -15,11 +19,14 @@ export class Chat extends React.Component {
       nickname: '',
       user: '',
       users: [],
-      logged: false
+      logged: false,
+
+
     };
 
     this.handleMessage = this.handleMessage.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+
   }
 
   componentDidMount() {
@@ -63,7 +70,11 @@ export class Chat extends React.Component {
     this.state.socket.emit('send-message', message);
   }
 
+
+
+
   render() {
+
     return (
       <div className="wrapper container-fluid">
         {!this.state.logged && <Connection onLogin={this.handleLogin.bind(this)} />}
@@ -83,6 +94,10 @@ export class Chat extends React.Component {
               <div className="send col-10">
                 <Send onSendMessage={this.handleMessage}
                        />
+
+
+
+
               </div>
             </div>
           </div>
