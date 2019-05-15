@@ -45,13 +45,27 @@ ul li {
 }
 
 .messages-gauche{
-  width: 100%;
+  width: 20%;
   text-align: left;
-  color: #1a3aff;
+  background-color: blue;
+  border-radius: 6px;
+  padding: 2px 15px 2px 15px;
+  color: white;
 }
 
 .messages-droite{
+  width: 20%;
+  float: right;
+  color: white;
+  background-color:darkgreen;
+  padding: 2px 15px 2px 15px;
+  border-radius: 6px;
+  clear: both;
+  margin: 2px 0px 0px 0px;
+}
+
+.ul-container{
   width: 100%;
-  text-align: right;
-  color: red;
+  height: auto;
+  margin: 2px 0px 0px 0px;
 }
