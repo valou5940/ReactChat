@@ -90,16 +90,15 @@ export class Chat extends React.Component {
                        user={this.state.user} />
               </div>
             </div>
-            <div className="row send-wrapper">
-              <div className="send col-10">
-                <Send onSendMessage={this.handleMessage}
-                       />
 
-
-
-
+              <div className="row send-wrapper">
+                <div className="send col-10">
+                  <Send onSendMessage={this.handleMessage}
+                        socket = {this.state.socket}
+                        user={this.state.nickname}
+                  />
+                </div>
               </div>
-            </div>
           </div>
         )}
       </div>

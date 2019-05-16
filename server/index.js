@@ -14,6 +14,8 @@ app.get('/', (req, res) => {
 
 let users = [];
 let messages = [];
+let usersWriting =[];
+
 io.on('connection', socket => {
   let currentUser;
   // socket.emit('user connected');
@@ -43,6 +45,24 @@ io.on('connection', socket => {
       io.emit('users-list', users);
     }
   });
+
+  socket.on('writing-message',userWriting => {
+    if (usersWriting.indexOf(userWriting) === -1 ){
+    usersWriting = [...usersWriting, userWriting];
+    io.emit('writing-message', usersWriting)
+    }
+    console.table(usersWriting)
+  });
+
+  socket.on('finished-message',userWriting => {
+    if (usersWriting.indexOf(userWriting) !== -1) {
+      usersWriting.splice(usersWriting.indexOf(userWriting), 1);
+    console.table(usersWriting)
+    io.emit('finished-message',usersWriting);1
+    }
+  });
+
+
 });
 
 server.listen(3001, () => {
