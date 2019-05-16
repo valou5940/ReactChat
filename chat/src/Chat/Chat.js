@@ -8,25 +8,23 @@ import { Smile } from 'react-feather';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 
-
 export class Chat extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       messagesArray: [],
-      socket: socketIOClient('http://localhost:3001'),
+      socket:
+        socketIOClient('http://localhost:3000') ||
+        socketIOClient(`http://localhost:${process.env.PORT}`),
       nickname: '',
       user: '',
       users: [],
-      logged: false,
-
-
+      logged: false
     };
 
     this.handleMessage = this.handleMessage.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
-
   }
 
   componentDidMount() {
@@ -70,11 +68,7 @@ export class Chat extends React.Component {
     this.state.socket.emit('send-message', message);
   }
 
-
-
-
   render() {
-
     return (
       <div className="wrapper container-fluid">
         {!this.state.logged && <Connection onLogin={this.handleLogin.bind(this)} />}
@@ -82,22 +76,15 @@ export class Chat extends React.Component {
           <div className="board">
             <div className="row messages-wrapper">
               <div className="messages col-10">
-                <MessagesBoard displayedMsg={this.state.messagesArray}
-                               user={this.state.nickname}/>
+                <MessagesBoard displayedMsg={this.state.messagesArray} user={this.state.nickname} />
               </div>
               <div className="users col-2">
-                <Users users={this.state.users}
-                       user={this.state.user} />
+                <Users users={this.state.users} user={this.state.user} />
               </div>
             </div>
             <div className="row send-wrapper">
               <div className="send col-10">
-                <Send onSendMessage={this.handleMessage}
-                       />
-
-
-
-
+                <Send onSendMessage={this.handleMessage} />
               </div>
             </div>
           </div>

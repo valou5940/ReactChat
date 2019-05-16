@@ -3,13 +3,22 @@ const http = require('http');
 const socketIo = require('socket.io');
 
 const app = express();
-
 const server = http.createServer(app);
-
 const io = socketIo(server);
+
+const path = require('path');
+const port = process.env.PORT || 3000;
+
+// the __dirname is the current directory from where the script is running
+app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/chat/public/index.html`);
+});
+
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 let users = [];
@@ -45,6 +54,6 @@ io.on('connection', socket => {
   });
 });
 
-server.listen(3001, () => {
-  console.log('server listening to port 3000');
+server.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
