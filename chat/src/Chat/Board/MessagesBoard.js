@@ -2,15 +2,12 @@ import React from 'react';
 export class MessagesBoard extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.displayedMsg);
   }
 
   componentDidUpdate() {
     this.scrollToBottom();
   }
-  // componentDidMount () {
-  //   this.scrollToBottom()
-  // }
+
   scrollToBottom = () => {
     this.refs.messageRef.scrollIntoView(false, { behavior: 'smooth' });
   };

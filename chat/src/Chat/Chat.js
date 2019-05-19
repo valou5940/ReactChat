@@ -91,9 +91,6 @@ export class Chat extends React.Component {
               </div>
             </div>
           </div>
-          // {/* <div className="row send-wrapper">
-
-          // </div> */}
         )}
       </div>
     );
