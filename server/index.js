@@ -14,14 +14,16 @@ app.get('/', (req, res) => {
 
 let users = [];
 let messages = [];
+index = 1;
 io.on('connection', socket => {
   let currentUser;
   // socket.emit('user connected');
 
   socket.on('send-message', message => {
-    let messageToDispatch = { message: message, user: currentUser };
+    let messageToDispatch = { index: index, message: message.message, user: currentUser };
     messages = [...messages, messageToDispatch];
     io.emit('dispatch-message', messageToDispatch);
+    index += 1;
   });
 
   socket.on('login', user => {

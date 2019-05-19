@@ -8,7 +8,6 @@ import { Smile } from 'react-feather';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 
-
 export class Chat extends React.Component {
   constructor(props) {
     super(props);
@@ -16,17 +15,14 @@ export class Chat extends React.Component {
     this.state = {
       messagesArray: [],
       socket: socketIOClient('http://localhost:3001'),
-      nickname: '',
+      loggedUser: '',
       user: '',
       users: [],
-      logged: false,
-
-
+      logged: false
     };
 
     this.handleMessage = this.handleMessage.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
-
   }
 
   componentDidMount() {
@@ -59,7 +55,7 @@ export class Chat extends React.Component {
   handleLogin(nickname) {
     this.setState({
       logged: true,
-      nickname: nickname
+      loggedUser: nickname
     });
 
     this.state.socket.emit('login', nickname);
@@ -70,37 +66,34 @@ export class Chat extends React.Component {
     this.state.socket.emit('send-message', message);
   }
 
-
-
-
   render() {
-
     return (
-      <div className="wrapper container-fluid">
-        {!this.state.logged && <Connection onLogin={this.handleLogin.bind(this)} />}
+      <div className="container-fluid">
+        <div className="login">
+          {!this.state.logged && <Connection onLogin={this.handleLogin.bind(this)} />}
+        </div>
         {this.state.logged && (
-          <div className="board">
-            <div className="row messages-wrapper">
-              <div className="messages col-10">
-                <MessagesBoard displayedMsg={this.state.messagesArray}
-                               user={this.state.nickname}/>
-              </div>
+          <div className="messages-wrapper">
+            <div className="messages-board row">
               <div className="users col-2">
-                <Users users={this.state.users}
-                       user={this.state.user} />
+                <Users users={this.state.users} user={this.state.user} />
+              </div>
+              <div className="messages col-10">
+                <MessagesBoard
+                  displayedMsg={this.state.messagesArray}
+                  loggedUser={this.state.loggedUser}
+                />
               </div>
             </div>
-            <div className="row send-wrapper">
-              <div className="send col-10">
-                <Send onSendMessage={this.handleMessage}
-                       />
-
-
-
-
+            <div className="row send">
+              <div className="col-10 offset-2">
+                <Send onSendMessage={this.handleMessage} loggedUser={this.state.loggedUser} />
               </div>
             </div>
           </div>
+          // {/* <div className="row send-wrapper">
+
+          // </div> */}
         )}
       </div>
     );
