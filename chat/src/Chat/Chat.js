@@ -78,7 +78,7 @@ export class Chat extends React.Component {
               <div className="users col-2">
                 <Users users={this.state.users} user={this.state.user} />
               </div>
-              <div className="messages col-10">
+              <div className="col-10 messages">
                 <MessagesBoard
                   displayedMsg={this.state.messagesArray}
                   loggedUser={this.state.loggedUser}

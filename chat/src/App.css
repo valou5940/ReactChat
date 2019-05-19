@@ -76,17 +76,17 @@ ul li {
 }
 
 .messages-gauche {
-  width: 70%;
+  width: 80%;
   text-align: left;
-  border-radius: 15px;
-  padding: 2px 15px 2px 15px;
+  /* border-radius: 15px;
+  padding: 2px 15px 2px 15px; */
   font-family: 'Courier New', Courier, monospace;
 }
 
 .messages-droite {
-  width: 70%;
-  padding: 2px 15px 2px 15px;
-  border-radius: 15px;
+  width: 85%;
+  /* padding: 2px 15px 2px 15px;
+  border-radius: 15px; */
   clear: both;
   margin-left: 100px;
   font-family: 'Courier New', Courier, monospace;
@@ -95,12 +95,18 @@ ul li {
 .ul-container {
   width: 100%;
   height: auto;
-  margin: 2px 0px 0px 0px;
+  /* margin: 2px 0px 0px 0px; */
   /* bottom: 0; */
+  padding: 0 !important;
+}
+
+.ul-container > p {
+  margin-left: 0 !important;
 }
 
 .messages-droite .user-message {
   color: rgb(167, 17, 187);
+  margin-left: 30px;
 }
 
 .messages-droite .user-chatting {
@@ -122,17 +128,20 @@ ul li {
 
 .messages {
   position: relative;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 ul.messages-list {
   position: absolute;
-  bottom: 0;
-  max-height: 100%;
-  height: auto;
+  /* bottom: 0; */
+  /* max-height: 100%;
+  height: auto; */
 }
 
-li:last-child {
+p {
+  margin-bottom: 0 !important;
+}
+/* li:last-child {
   position: sticky;
   bottom: 0;
-}
+} */
