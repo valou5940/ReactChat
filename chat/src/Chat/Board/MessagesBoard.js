@@ -28,16 +28,18 @@ export class MessagesBoard extends React.Component {
                       }
                     >
                       {
-                        <p>
-                          <i className="user-chatting">
-                            '{message ? message.user.toUpperCase() : ''}'
-                          </i>
+                        <div>
+                          <span>
+                            <i className="user-chatting">
+                              '{message ? message.user.toUpperCase() : ''}'
+                            </i>
+                          </span>
                           <span className="text-deco"> : {'{'}</span>
-                          <br />
-                          <span className="user-message"> {message.message} </span>
-                          <br />
+                          {/* <br /> */}
+                          <p className="user-message"> {message.message} </p>
+                          {/* <br /> */}
                           <span className="text-deco">{'}'}</span>
-                        </p>
+                        </div>
                       }
                     </li>
                   </div>
