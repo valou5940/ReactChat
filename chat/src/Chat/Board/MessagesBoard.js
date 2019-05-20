@@ -16,7 +16,7 @@ export class MessagesBoard extends React.Component {
     return (
       <div>
         <ul className="messages-list" ref="messageRef">
-          {this.props.displayedMsg !== null
+          {this.props.displayedMsg.length !== 0
             ? Array.from(this.props.displayedMsg).map((message, index) => {
                 return (
                   <div className="ul-container col-12" key={index}>

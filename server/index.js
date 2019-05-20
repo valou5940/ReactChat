@@ -24,6 +24,13 @@ io.on('connection', socket => {
     messages = [...messages, messageToDispatch];
     io.emit('dispatch-message', messageToDispatch);
     index += 1;
+    if (messages.length > 30) {
+      setTimeout(() => {
+        messages = messages.slice(20, 30);
+        index = 21;
+        io.emit('dispatch-messages', messages);
+      }, 5000);
+    }
   });
 
   socket.on('login', user => {

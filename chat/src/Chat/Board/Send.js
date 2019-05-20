@@ -33,7 +33,6 @@ export class Send extends React.Component {
   }
 
   handleKeyPress(evt) {
-    console.log(evt.keyCode);
     if (evt.which === 13 || evt.keyCode === 13) {
       this.sendMessage();
     }
