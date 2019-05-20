@@ -17,7 +17,7 @@ let messages = [];
 index = 1;
 io.on('connection', socket => {
   let currentUser;
-  // socket.emit('user connected');
+  socket.emit('users-list', users);
 
   socket.on('send-message', message => {
     let messageToDispatch = { index: index, message: message.message, user: currentUser };
@@ -34,7 +34,6 @@ io.on('connection', socket => {
   });
 
   socket.on('login', user => {
-    // io.emit('user-connection', user);
     currentUser = user;
     users = [...users, user];
     io.emit('user-connected', user);
@@ -46,8 +45,10 @@ io.on('connection', socket => {
     if (users.indexOf(currentUser) !== -1) {
       users.splice(users.indexOf(currentUser), 1);
     }
-    io.emit('user-disconnected', `${currentUser} disconnected`);
-    console.log(currentUser + ' disconnected');
+    if (currentUser !== null && currentUser !== undefined) {
+      io.emit('user-disconnected', currentUser);
+      console.log(currentUser + ' disconnected');
+    }
     if (users.length > 0) {
       io.emit('users-list', users);
     }

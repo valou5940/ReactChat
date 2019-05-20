@@ -45,15 +45,20 @@ export class Chat extends React.Component {
     });
 
     this.state.socket.on('user-connected', user => {
-      this.setState({ user: user });
+      let userConnect = `${user} has connected !`;
+      this.setState({ user: userConnect });
     });
 
     this.state.socket.on('user-disconnected', user => {
-      this.setState({ user: user });
+      if (user !== null) {
+        let userDisconnect = `${user} has disconnected !`;
+        this.setState({ user: userDisconnect });
+      }
     });
   }
 
   handleLogin(nickname) {
+    console.log(this.state.users);
     if (this.state.users.indexOf(nickname) === -1) {
       this.setState({
         logged: true,

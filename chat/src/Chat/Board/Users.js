@@ -18,7 +18,7 @@ export class Users extends React.Component {
         </ul>
         <hr />
         <div className="connect-event">
-          <span>{this.props.user} has connected !</span>
+          <span>{this.props.user !== null ? this.props.user : ''}</span>
         </div>
       </div>
     );
