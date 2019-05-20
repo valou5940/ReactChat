@@ -18,7 +18,8 @@ export class Chat extends React.Component {
       loggedUser: '',
       user: '',
       users: [],
-      logged: false
+      logged: false,
+      errorMessage: ''
     };
 
     this.handleMessage = this.handleMessage.bind(this);
@@ -53,12 +54,19 @@ export class Chat extends React.Component {
   }
 
   handleLogin(nickname) {
-    this.setState({
-      logged: true,
-      loggedUser: nickname
-    });
-
-    this.state.socket.emit('login', nickname);
+    if (this.state.users.indexOf(nickname) === -1) {
+      this.setState({
+        logged: true,
+        loggedUser: nickname,
+        errorMessage: ''
+      });
+      this.state.socket.emit('login', nickname);
+    } else {
+      this.setState({
+        logged: false,
+        errorMessage: `Nickname ${nickname} already taken!`
+      });
+    }
   }
 
   handleMessage(message) {
@@ -70,7 +78,12 @@ export class Chat extends React.Component {
     return (
       <div className="container-fluid">
         <div className="login">
-          {!this.state.logged && <Connection onLogin={this.handleLogin.bind(this)} />}
+          {!this.state.logged && (
+            <Connection
+              errorMessage={this.state.errorMessage}
+              onLogin={this.handleLogin.bind(this)}
+            />
+          )}
         </div>
         {this.state.logged && (
           <div className="messages-wrapper">

@@ -26,6 +26,7 @@ export class Connection extends React.Component {
       <div>
         <input type="text" placeholder="choose a nickname" onChange={this.handleLogin} />
         <input type="submit" onClick={this.login} value="Connect" />
+        {this.props.errorMessage && <p className="error">{this.props.errorMessage}</p>}
       </div>
     );
   }

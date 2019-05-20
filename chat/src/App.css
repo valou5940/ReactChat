@@ -30,7 +30,8 @@ body {
 
 .users {
   color: whitesmoke;
-  justify-content: left;
+  /* justify-content: left; */
+  text-align: center;
   border-right: 0.5px dotted gray;
 }
 
@@ -61,18 +62,52 @@ body {
   min-height: 90vh;
 }
 
-ul li {
+ul.messages-list li {
   word-break: break-all;
   white-space: normal;
   list-style-type: none;
+}
+
+ul.users-list {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+li {
+  list-style-type: none;
+}
+
+hr {
+  border: 0.5px dotted gray !important;
 }
 
 .wrapper {
   width: 100%;
 }
 
-.message-typing {
-  width: 90%;
+.message-sender {
+  width: 70%;
+  /* border-radius: 15px 0 0 15px; */
+  height: 40px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.send-container {
+  text-align: center;
+}
+
+.toggle-emoji {
+  height: 40px;
+  border-radius: 15px 0 0 15px;
+  color: white;
+  background-color: rgba(9, 81, 236, 0.89);
+}
+
+.submit-button {
+  height: 40px;
+  border-radius: 0 15px 15px 0;
+  color: white;
+  background-color: rgba(9, 81, 236, 0.89);
 }
 
 .messages-gauche {
@@ -137,4 +172,8 @@ ul.messages-list {
 
 p {
   margin-bottom: 0 !important;
+}
+
+.error {
+  color: red;
 }

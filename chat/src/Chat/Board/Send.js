@@ -57,7 +57,7 @@ export class Send extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="send-container">
         <ul className="chat-messages">
           {this.state.showEmojiPicker ? <Picker set="emojione" onSelect={this.addEmoji} /> : null}
         </ul>
@@ -65,14 +65,14 @@ export class Send extends React.Component {
           <Smile />
         </button>
         <input
-          className="message-typing"
+          className="message-sender"
           type="text"
           placeholder="type message here..."
           value={this.state.message}
           onChange={this.handleMessage}
           onKeyPress={this.handleKeyPress}
         />
-        <input type="submit" onClick={this.sendMessage} value="Send" />
+        <input className="submit-button" type="submit" onClick={this.sendMessage} value="Send" />
       </div>
     );
   }

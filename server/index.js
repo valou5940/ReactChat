@@ -37,7 +37,7 @@ io.on('connection', socket => {
     // io.emit('user-connection', user);
     currentUser = user;
     users = [...users, user];
-    io.emit('user-connected', `${user} connected`);
+    io.emit('user-connected', user);
     io.emit('users-list', users);
     io.emit('dispatch-messages', messages);
   });
