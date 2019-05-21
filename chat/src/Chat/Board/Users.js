@@ -13,7 +13,11 @@ export class Users extends React.Component {
         <hr />
         <ul className="users-list">
           {users.map((user, index) => {
-            return <li key={index}>{user}</li>;
+            return (
+              <li key={index}>
+                {user.nickname} {user.isWriting ? 'typing...' : ''}
+              </li>
+            );
           })}
         </ul>
         <hr />

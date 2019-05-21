@@ -19,7 +19,8 @@ export class Chat extends React.Component {
       user: '',
       users: [],
       logged: false,
-      errorMessage: ''
+      errorMessage: '',
+      isWriting: false
     };
 
     this.handleMessage = this.handleMessage.bind(this);
@@ -59,7 +60,7 @@ export class Chat extends React.Component {
 
   handleLogin(nickname) {
     console.log(this.state.users);
-    if (this.state.users.indexOf(nickname) === -1) {
+    if (this.state.users.find(user => user.nickname === nickname) === undefined) {
       this.setState({
         logged: true,
         loggedUser: nickname,
@@ -79,6 +80,15 @@ export class Chat extends React.Component {
     this.state.socket.emit('send-message', message);
   }
 
+  handleIsWriting(isWriting) {
+    console.log(isWriting);
+    this.setState({ isWriting: isWriting });
+    this.state.socket.emit('is-writing', {
+      nickname: this.state.loggedUser,
+      isWriting: isWriting
+    });
+  }
+
   render() {
     return (
       <div className="container-fluid">
@@ -94,7 +104,11 @@ export class Chat extends React.Component {
           <div className="messages-wrapper">
             <div className="messages-board row">
               <div className="users col-2">
-                <Users users={this.state.users} user={this.state.user} />
+                <Users
+                  users={this.state.users}
+                  user={this.state.user}
+                  isWriting={this.state.isWriting}
+                />
               </div>
               <div className="col-10 messages">
                 <MessagesBoard
@@ -105,7 +119,12 @@ export class Chat extends React.Component {
             </div>
             <div className="row send">
               <div className="col-10 offset-2">
-                <Send onSendMessage={this.handleMessage} loggedUser={this.state.loggedUser} />
+                <Send
+                  onSendMessage={this.handleMessage}
+                  loggedUser={this.state.loggedUser}
+                  onIsWriting={this.handleIsWriting.bind(this)}
+                  isWriting={this.state.isWriting}
+                />
               </div>
             </div>
           </div>

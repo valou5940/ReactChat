@@ -14,7 +14,7 @@ export class MessagesBoard extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="messages-list-wrapper">
         <ul className="messages-list" ref="messageRef">
           {this.props.displayedMsg.length !== 0
             ? Array.from(this.props.displayedMsg).map((message, index) => {

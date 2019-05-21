@@ -20,6 +20,7 @@ export class Send extends React.Component {
     if (this.state.message !== '' && this.state.message !== undefined) {
       let message = { message: this.state.message, user: this.props.loggedUser };
       this.props.onSendMessage(message);
+      this.props.onIsWriting(!this.props.isWriting);
       this.setState({
         message: ''
       });
@@ -27,6 +28,14 @@ export class Send extends React.Component {
   }
 
   handleMessage(evt) {
+    console.log(!this.props.isWriting);
+    console.log(evt.target.value);
+    if (evt.target.value !== '' && evt.target.value !== null && !this.props.isWriting) {
+      this.props.onIsWriting(!this.props.isWriting);
+    } else if (evt.target.value === '') {
+      this.props.onIsWriting(!this.props.isWriting);
+    }
+
     this.setState({
       message: evt.target.value
     });

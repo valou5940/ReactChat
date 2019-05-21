@@ -33,19 +33,30 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('login', user => {
-    currentUser = user;
-    users = [...users, user];
-    io.emit('user-connected', user);
+  socket.on('login', nickname => {
+    currentUser = nickname;
+    // let user = ;
+    users = [...users, { nickname: nickname, isWriting: false }];
+    io.emit('user-connected', nickname);
     io.emit('users-list', users);
     io.emit('dispatch-messages', messages);
   });
 
+  socket.on('is-writing', userState => {
+    users.map(user => {
+      if (user.nickname === userState.nickname) {
+        user.isWriting = userState.isWriting;
+      }
+    });
+    io.emit('users-list', users);
+  });
+
   socket.on('disconnect', () => {
-    if (users.indexOf(currentUser) !== -1) {
-      users.splice(users.indexOf(currentUser), 1);
-    }
+    // if (users.indexOf(currentUser) !== -1) {
+    //   users.splice(users.indexOf(currentUser), 1);
+    // }
     if (currentUser !== null && currentUser !== undefined) {
+      users = users.filter(user => user.nickname !== currentUser);
       io.emit('user-disconnected', currentUser);
       console.log(currentUser + ' disconnected');
     }
