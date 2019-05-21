@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Nayla Chat</h1>
+        <h1>NaPi Chat</h1>
       </header>
       <Chat />
     </div>

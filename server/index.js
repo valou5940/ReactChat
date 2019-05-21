@@ -20,7 +20,7 @@ io.on('connection', socket => {
   socket.emit('users-list', users);
 
   socket.on('send-message', message => {
-    let messageToDispatch = { index: index, message: message.message, user: currentUser };
+    let messageToDispatch = { index: index, text: message.text, date: message.date, user: currentUser };
     messages = [...messages, messageToDispatch];
     io.emit('dispatch-message', messageToDispatch);
     index += 1;

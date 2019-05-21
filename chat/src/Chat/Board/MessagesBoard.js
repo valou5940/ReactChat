@@ -2,6 +2,7 @@ import React from 'react';
 export class MessagesBoard extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props.displayedMsg)
   }
 
   componentDidUpdate() {
@@ -29,6 +30,10 @@ export class MessagesBoard extends React.Component {
                     >
                       {
                         <div>
+                          <span className="date-msg">
+                            {message.date}
+                          </span>
+                          <span className="text-deco">_</span>
                           <span>
                             <i className="user-chatting">
                               '{message ? message.user.toUpperCase() : ''}'
@@ -36,7 +41,7 @@ export class MessagesBoard extends React.Component {
                           </span>
                           <span className="text-deco"> : {'{'}</span>
                           {/* <br /> */}
-                          <p className="user-message"> {message.message} </p>
+                          <p className="user-message"> {message.text} </p>
                           {/* <br /> */}
                           <span className="text-deco">{'}'}</span>
                         </div>

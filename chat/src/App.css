@@ -182,3 +182,8 @@ p {
 .error {
   color: red;
 }
+
+.date-msg {
+  color: rgb(2, 214, 2);
+  font-size: 12px;
+}
