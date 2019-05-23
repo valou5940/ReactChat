@@ -1,6 +1,7 @@
 import React from 'react';
 import { Smile } from 'react-feather';
 import { Picker } from 'emoji-mart';
+import sendButton from './paper-plane-regular.svg';
 
 export class Send extends React.Component {
   constructor(props) {
@@ -30,8 +31,6 @@ export class Send extends React.Component {
   }
 
   handleMessage(evt) {
-    console.log(!this.props.isWriting);
-    console.log(evt.target.value);
     if (evt.target.value !== '' && evt.target.value !== null && !this.props.isWriting) {
       this.props.onIsWriting(!this.props.isWriting);
     } else if (evt.target.value === '') {
@@ -78,12 +77,13 @@ export class Send extends React.Component {
         <input
           className="message-sender"
           type="text"
-          placeholder="type message here..."
           value={this.state.message}
           onChange={this.handleMessage}
           onKeyPress={this.handleKeyPress}
         />
-        <input className="submit-button" type="submit" onClick={this.sendMessage} value="Send" />
+        <button className="submit-button" type="submit" onClick={this.sendMessage}>
+          <img src={sendButton} alt="send" width="20px" height="20px" />
+        </button>
       </div>
     );
   }

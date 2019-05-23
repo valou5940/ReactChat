@@ -3,10 +3,10 @@ import { MessagesBoard } from './Board/MessagesBoard';
 import { Send } from './Board/Send';
 import socketIOClient from 'socket.io-client';
 import { Connection } from './Login/Connection';
-import { Users } from './Board/Users';
 import { Smile } from 'react-feather';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { Users } from './Board/Users/Users';
 
 export class Chat extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ export class Chat extends React.Component {
 
     this.state = {
       messagesArray: [],
-      socket: socketIOClient('http://localhost:3001'),
+      socket: socketIOClient('http://localhost:5000'),
       loggedUser: '',
       user: '',
       users: [],
@@ -56,6 +56,12 @@ export class Chat extends React.Component {
         this.setState({ user: userDisconnect });
       }
     });
+
+    // this.state.socket.on('join-conversation', user => {
+    //   if (user === this.state.loggedUser) {
+    //     this.state.emit();
+    //   }
+    // });
   }
 
   handleLogin(nickname) {
@@ -89,6 +95,11 @@ export class Chat extends React.Component {
     });
   }
 
+  handleNewConversation(user, self) {
+    console.log(user, self);
+    // this.state.socket.emit('switch-conversation', { user: user, self: self });
+  }
+
   render() {
     return (
       <div className="container-fluid">
@@ -105,9 +116,11 @@ export class Chat extends React.Component {
             <div className="messages-board row">
               <div className="users col-2">
                 <Users
+                  self={this.state.loggedUser}
                   users={this.state.users}
                   user={this.state.user}
                   isWriting={this.state.isWriting}
+                  onNewConversation={this.handleNewConversation.bind(this)}
                 />
               </div>
               <div className="col-10 messages">

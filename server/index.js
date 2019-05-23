@@ -5,15 +5,15 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 const path = require('path');
-
-// app.get('/', (req, res) => {
-//   res.sendFile(`${__dirname}/chat/public/index.html`);
-// });
-app.use(express.static(path.join(__dirname, 'build')));
-
+const port = process.env.PORT || 5000;
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build/index.html'));
+  res.sendFile(`${__dirname}/chat/public/index.html`);
 });
+// app.use(express.static(__dirname));
+// app.use(express.static(path.join(__dirname, 'build')));
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'build/index.html'));
+// });
 
 let users = [];
 let messages = [];
@@ -80,6 +80,6 @@ io.on('connection', socket => {
   });
 });
 
-server.listen(process.env.port || 3000, () => {
-  console.log('server listening to port 3000');
+server.listen(port, () => {
+  console.log(`server listening to port ${port}`);
 });
