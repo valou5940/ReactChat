@@ -1,26 +1,36 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-
 const app = express();
-
 const server = http.createServer(app);
-
 const io = socketIo(server);
+const path = require('path');
+
+// app.get('/', (req, res) => {
+//   res.sendFile(`${__dirname}/chat/public/index.html`);
+// });
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/chat/public/index.html`);
+  res.sendFile(path.join(__dirname, 'build/index.html'));
 });
 
 let users = [];
 let messages = [];
-index = 1;
+let index = 1;
+// let room = 'main-room';
 io.on('connection', socket => {
   let currentUser;
+  // socket.join(room);
   socket.emit('users-list', users);
 
   socket.on('send-message', message => {
-    let messageToDispatch = { index: index, text: message.text, date: message.date, user: currentUser };
+    let messageToDispatch = {
+      index: index,
+      text: message.text,
+      date: message.date,
+      user: currentUser
+    };
     messages = [...messages, messageToDispatch];
     io.emit('dispatch-message', messageToDispatch);
     index += 1;
@@ -51,10 +61,14 @@ io.on('connection', socket => {
     io.emit('users-list', users);
   });
 
+  // socket.on('switch-conversation', users => {
+  //   socket.leave(room);
+  //   room = `${users.self}${users.user}-room`;
+  //   socket.broadcast.emit('join-conversation', users.user);
+  //   socket.join(room);
+  // });
+
   socket.on('disconnect', () => {
-    // if (users.indexOf(currentUser) !== -1) {
-    //   users.splice(users.indexOf(currentUser), 1);
-    // }
     if (currentUser !== null && currentUser !== undefined) {
       users = users.filter(user => user.nickname !== currentUser);
       io.emit('user-disconnected', currentUser);
@@ -66,6 +80,6 @@ io.on('connection', socket => {
   });
 });
 
-server.listen(3001, () => {
+server.listen(process.env.port || 3000, () => {
   console.log('server listening to port 3000');
 });
