@@ -31,7 +31,7 @@ export class Users extends React.Component {
             );
           })}
         </ul>
-        <hr />
+        <br />
         <div className="connect-event">
           <span>
             {this.props.user !== null && this.props.user.split(' ')[0] !== self
