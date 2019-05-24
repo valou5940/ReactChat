@@ -1,5 +1,5 @@
 let mongoose = require('mongoose');
-const mongoDB = 'mongodb+srv://Valentin:nayla@cluster0-vnytu.mongodb.net/test?retryWrites=true';
+const mongoDB = 'mongodb+srv://Valentin:nayla@cluster0-vnytu.mongodb.net/napichat?retryWrites=true';
 
 class Database {
   constructor() {
@@ -17,6 +17,7 @@ class Database {
       .catch(err => {
         console.error('Database connection error', err);
       });
+
     let db = mongoose.connection;
     db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
     db.once('open', function() {

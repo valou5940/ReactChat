@@ -7,8 +7,6 @@ const io = socketIo(server);
 const path = require('path');
 const port = process.env.PORT || 5000;
 const MessageModel = require('./database/schema.js');
-const mongoose = require('mongoose');
-const database = require('./database/database.js');
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/chat/public/index.html`);
 });
