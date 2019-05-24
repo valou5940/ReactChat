@@ -12,7 +12,6 @@ export class MessagesBoard extends React.Component {
   scrollToBottom = () => {
     this.refs.messageRef.scrollIntoView(false, { behavior: 'smooth' });
   };
-
   render() {
     return (
       <div className="messages-list-wrapper">

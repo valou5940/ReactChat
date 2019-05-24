@@ -35,6 +35,9 @@ export class Chat extends React.Component {
 
     this.state.socket.on('dispatch-message', message => {
       console.log(message);
+      // let formattedDate;
+      // formattedDate = message.date.getHours();
+      // message.date = formattedDate;
       this.setState(prevState => ({
         messagesArray: [...prevState.messagesArray, message]
       }));

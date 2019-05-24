@@ -6,7 +6,9 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const path = require('path');
 const port = process.env.PORT || 5000;
-
+const MessageModel = require('./database/schema.js');
+const mongoose = require('mongoose');
+const database = require('./database/database.js');
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/chat/public/index.html`);
 });
@@ -18,8 +20,7 @@ app.get('/', (req, res) => {
 
 let users = [];
 let messages = [];
-let index = 1;
-// let room = 'main-room';
+
 io.on('connection', socket => {
   let currentUser;
   // socket.join(room);
@@ -27,18 +28,32 @@ io.on('connection', socket => {
 
   socket.on('send-message', message => {
     let messageToDispatch = {
-      index: index,
       text: message.text,
       date: message.date,
       user: currentUser
     };
+
+    let messageToDb = new MessageModel({
+      user: currentUser,
+      text: message.text,
+      date: message.date
+    });
+
+    console.log(messageToDb);
+    messageToDb
+      .save()
+      .then(doc => {
+        console.log(doc);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
     messages = [...messages, messageToDispatch];
     io.emit('dispatch-message', messageToDispatch);
-    index += 1;
     if (messages.length > 30) {
       setTimeout(() => {
         messages = messages.slice(20, 30);
-        index = 21;
         io.emit('dispatch-messages', messages);
       }, 5000);
     }
