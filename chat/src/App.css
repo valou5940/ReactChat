@@ -76,6 +76,7 @@ ul.messages-list li {
 ul.users-list {
   margin: 0 !important;
   padding: 0 !important;
+  color: rgb(221, 218, 23);
 }
 
 li {
@@ -204,6 +205,6 @@ p {
 }
 
 .new-conversation-button {
-  color: blue;
+  color: rgb(25, 186, 235);
   cursor: pointer;
 }

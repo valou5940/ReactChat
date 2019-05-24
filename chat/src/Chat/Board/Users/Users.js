@@ -21,10 +21,11 @@ export class Users extends React.Component {
         <h5>Users connected</h5>
         <hr />
         <ul className="users-list">
+          <li>{this.props.self.toUpperCase()}</li>
           {users.map((user, index) => {
             return (
               <li key={index} onClick={this.handleNewConversation.bind(this, user)}>
-                <span className="new-conversation-button">{user.nickname}</span>
+                <span className="new-conversation-button">{user.nickname.toUpperCase()}</span>
                 {user.isWriting ? ' typing...' : ''}
               </li>
             );

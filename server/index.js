@@ -6,6 +6,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const path = require('path');
 const port = process.env.PORT || 5000;
+
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/chat/public/index.html`);
 });

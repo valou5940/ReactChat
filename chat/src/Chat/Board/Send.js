@@ -1,7 +1,7 @@
 import React from 'react';
 import { Smile } from 'react-feather';
 import { Picker } from 'emoji-mart';
-import sendButton from './paper-plane-regular.svg';
+// import sendButton from './paper-plane-regular.svg';
 
 export class Send extends React.Component {
   constructor(props) {
@@ -82,7 +82,7 @@ export class Send extends React.Component {
           onKeyPress={this.handleKeyPress}
         />
         <button className="submit-button" type="submit" onClick={this.sendMessage}>
-          <img src={sendButton} alt="send" width="20px" height="20px" />
+          {/* <img src={sendButton} alt="send" width="20px" height="20px" /> */}
         </button>
       </div>
     );
