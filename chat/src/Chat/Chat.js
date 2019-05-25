@@ -2,7 +2,7 @@ import React from 'react';
 import { MessagesBoard } from './Board/MessagesBoard';
 import { Send } from './Board/Send';
 import socketIOClient from 'socket.io-client';
-import { Connection } from './Login/Connection';
+import { Connection } from '../Connection/Connection';
 import { Smile } from 'react-feather';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -106,14 +106,14 @@ export class Chat extends React.Component {
   render() {
     return (
       <div className="container-fluid">
-        <div className="login">
+        {/* <div className="login">
           {!this.state.logged && (
             <Connection
               errorMessage={this.state.errorMessage}
               onLogin={this.handleLogin.bind(this)}
             />
           )}
-        </div>
+        </div> */}
         {this.state.logged && (
           <div className="messages-wrapper">
             <div className="messages-board row">

@@ -7,6 +7,7 @@ class Database {
   }
 
   connect() {
+    mongoose.set('useCreateIndex', true);
     mongoose
       .connect(mongoDB, {
         useNewUrlParser: true
