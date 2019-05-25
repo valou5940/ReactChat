@@ -114,37 +114,35 @@ export class Chat extends React.Component {
             />
           )}
         </div> */}
-        {this.state.logged && (
-          <div className="messages-wrapper">
-            <div className="messages-board row">
-              <div className="users col-2">
-                <Users
-                  self={this.state.loggedUser}
-                  users={this.state.users}
-                  user={this.state.user}
-                  isWriting={this.state.isWriting}
-                  onNewConversation={this.handleNewConversation.bind(this)}
-                />
-              </div>
-              <div className="col-10 messages">
-                <MessagesBoard
-                  displayedMsg={this.state.messagesArray}
-                  loggedUser={this.state.loggedUser}
-                />
-              </div>
+        <div className="messages-wrapper">
+          <div className="messages-board row">
+            <div className="users col-2">
+              <Users
+                self={this.state.loggedUser}
+                users={this.state.users}
+                user={this.state.user}
+                isWriting={this.state.isWriting}
+                onNewConversation={this.handleNewConversation.bind(this)}
+              />
             </div>
-            <div className="row send">
-              <div className="col-10 offset-2">
-                <Send
-                  onSendMessage={this.handleMessage}
-                  loggedUser={this.state.loggedUser}
-                  onIsWriting={this.handleIsWriting.bind(this)}
-                  isWriting={this.state.isWriting}
-                />
-              </div>
+            <div className="col-10 messages">
+              <MessagesBoard
+                displayedMsg={this.state.messagesArray}
+                loggedUser={this.state.loggedUser}
+              />
             </div>
           </div>
-        )}
+          <div className="row send">
+            <div className="col-10 offset-2">
+              <Send
+                onSendMessage={this.handleMessage}
+                loggedUser={this.state.loggedUser}
+                onIsWriting={this.handleIsWriting.bind(this)}
+                isWriting={this.state.isWriting}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

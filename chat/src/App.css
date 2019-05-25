@@ -208,3 +208,7 @@ p {
   color: rgb(25, 186, 235);
   cursor: pointer;
 }
+
+.full-users-list {
+  color: white;
+}

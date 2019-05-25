@@ -36,11 +36,22 @@ app.use(express.static(__dirname + '/public'));
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/chat/public/index.html`);
 });
+
 // app.use(express.static(__dirname));
 // app.use(express.static(path.join(__dirname, 'build')));
 // app.get('/', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'build/index.html'));
 // });
+app.get('/users', (req, res) => {
+  getFullUsersList()
+    .then(users => {
+      console.log('Full users list', users);
+      res.json({ users: users });
+    })
+    .catch(error => {
+      res.json(error);
+    });
+});
 
 app.post('/user', (req, res) => {
   console.log(req.body.nickname);
@@ -180,57 +191,22 @@ setNicknameOnLogin = nickname => {
       });
   });
 };
-// see if user is presend in database
 
-// .then(user => {
-//   return (userExist = user);
-// })
-// .catch(error => {
-//   return handleError(error);
-// });
-// } else {
-//  userExit = "";
-
-// .catch(error => {
-//   return handleError(error);
-// });
-//save user into database
-
-// UserModel.find({ , logged: true }, (err, user) => {
-//   if (err) {
-//     console.log(err);
-//     return handleError(err);
-//   }
-//   userExist = user;
-// });
-// console.log('userExist', userExist);
-
-// // if user doesn't exist create it, else update status
-// // if (userExist === undefined) {
-// UserModel.findOneAndUpdate(
-//   {
-//     nickname: currentUser
-//   },
-//   {
-//     nickname: currentUser,
-//     logged: true
-//   },
-//   {
-//     new: true,
-//     upsert: true,
-//     runValidators: true,
-//     useFindAndModify: false
-//   },
-//   (err, user) => {
-//     if (err) {
-//       console.log(err);
-//       return handleError(err);
-//     }
-//     userExist = user;
-//   }
-// );
-// // }
-// console.log('userupload', userExist);
+getFullUsersList = () => {
+  return new Promise((resolve, reject) => {
+    UserModel.find({})
+      .then(users => {
+        if (users !== undefined) {
+          resolve(users);
+        } else {
+          reject('No users connected');
+        }
+      })
+      .catch(error => {
+        return handleError(error);
+      });
+  });
+};
 
 server.listen(port, () => {
   console.log(`server listening to port ${port}`);
