@@ -14,8 +14,8 @@ export class Chat extends React.Component {
 
     this.state = {
       messagesArray: [],
-      socket: socketIOClient('http://localhost:5000'),
-      loggedUser: '',
+      socket: this.props.socket,
+      loggedUser: this.props.location.login.self,
       user: '',
       users: [],
       logged: false,
@@ -24,7 +24,11 @@ export class Chat extends React.Component {
     };
 
     this.handleMessage = this.handleMessage.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+
+    this.state.socket.on('users-list', users => {
+      console.log(users);
+      this.setState({ users: users });
+    });
   }
 
   componentDidMount() {
@@ -48,15 +52,32 @@ export class Chat extends React.Component {
       this.setState({ users: users });
     });
 
-    this.state.socket.on('user-connected', user => {
-      let userConnect = `${user} has connected !`;
+    // this.state.socket.on('user-created-room', user => {
+    //   console.log(user.self);
+    //   this.setState(prevState => ({
+    //     users: [...prevState.users, user.self]
+    //   }));
+    //   this.state.socket.emit('users-list', this.state.users);
+    // });
+
+    this.state.socket.on('user-joined', user => {
+      console.log(user);
+      let userConnect = `${user.nickname} has connected !`;
       this.setState({ user: userConnect });
+      // this.setState(prevState => ({
+      //   users: [...prevState.users, user]
+      // }));
+      // this.state.socket.emit('users-list', this.state.users);
     });
 
-    this.state.socket.on('user-disconnected', user => {
-      if (user !== null) {
-        let userDisconnect = `${user} has disconnected !`;
-        this.setState({ user: userDisconnect });
+    this.state.socket.on('user-disconnected', userDisconnected => {
+      if (userDisconnected !== null) {
+        let userLeft = `${userDisconnected.nickname} has disconnected !`;
+        this.setState({ user: userLeft });
+        this.setState({
+          users: this.state.users.filter(user => user.nickname !== userLeft)
+        });
+        this.state.socket.emit('users-list', this.state.users);
       }
     });
 
@@ -65,23 +86,6 @@ export class Chat extends React.Component {
     //     this.state.emit();
     //   }
     // });
-  }
-
-  handleLogin(nickname) {
-    console.log(this.state.users);
-    if (this.state.users.find(user => user.nickname === nickname) === undefined) {
-      this.setState({
-        logged: true,
-        loggedUser: nickname,
-        errorMessage: ''
-      });
-      this.state.socket.emit('login', nickname);
-    } else {
-      this.setState({
-        logged: false,
-        errorMessage: `Nickname ${nickname} already taken!`
-      });
-    }
   }
 
   handleMessage(message) {
@@ -106,14 +110,6 @@ export class Chat extends React.Component {
   render() {
     return (
       <div className="container-fluid">
-        {/* <div className="login">
-          {!this.state.logged && (
-            <Connection
-              errorMessage={this.state.errorMessage}
-              onLogin={this.handleLogin.bind(this)}
-            />
-          )}
-        </div> */}
         <div className="messages-wrapper">
           <div className="messages-board row">
             <div className="users col-2">

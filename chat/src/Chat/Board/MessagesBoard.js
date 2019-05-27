@@ -22,18 +22,21 @@ export class MessagesBoard extends React.Component {
                   <div className="ul-container col-12" key={index}>
                     <li
                       className={
-                        this.props.loggedUser === message.user
+                        this.props.loggedUser.nickname === message.user.nickname
                           ? 'messages-droite'
                           : 'messages-gauche'
                       }
                     >
                       {
                         <div className="message-wrapper">
-                          <span className="date-msg">{message.date}</span>
+                          <span className="date-msg">
+                            {new Date(message.date).getHours()}:
+                            {new Date(message.date).getMinutes()}
+                          </span>
                           <span className="text-deco">_</span>
                           <span>
                             <i className="user-chatting">
-                              '{message ? message.user.toUpperCase() : ''}'
+                              '{message ? message.user.nickname.toUpperCase() : ''}'
                             </i>
                           </span>
                           <span className="text-deco"> : {'{'}</span>

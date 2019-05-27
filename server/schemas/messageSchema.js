@@ -1,9 +1,11 @@
 let mongoose = require('mongoose');
-
+let user = require('./userSchema');
+// let ObjectId = mongoose.Schema.Types.ObjectId;
 const messageSchema = new mongoose.Schema({
-  user: String,
+  user: user.userSchema,
   text: String,
-  date: Date
+  date: Date,
+  channel: String
 });
 
 module.exports = mongoose.model('message', messageSchema);

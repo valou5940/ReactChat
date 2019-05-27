@@ -5,6 +5,7 @@ export class Users extends React.Component {
   constructor(props) {
     super(props);
     this.handleNewConversation = this.handleNewConversation.bind(this);
+    console.log(this.props);
   }
 
   handleNewConversation(user) {
@@ -14,14 +15,14 @@ export class Users extends React.Component {
 
   render() {
     let users = [...this.props.users];
-    const self = this.props.self;
+    const self = this.props.self.nickname;
     users = users.filter(user => user.nickname !== self);
     return (
       <div>
         <h5>Users connected</h5>
         <hr />
         <ul className="users-list">
-          <li>{this.props.self.toUpperCase()}</li>
+          <li>{self.toUpperCase()}</li>
           {users.map((user, index) => {
             return (
               <li key={index} onClick={this.handleNewConversation.bind(this, user)}>

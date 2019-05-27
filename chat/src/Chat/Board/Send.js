@@ -20,6 +20,7 @@ export class Send extends React.Component {
   sendMessage() {
     if (this.state.message !== '' && this.state.message !== undefined) {
       const date = new Date();
+      console.log('LOGGED USER ', this.props.loggedUser);
       // let dateMsg = date.getHours() + ':' + date.getMinutes();
       let message = { text: this.state.message, user: this.props.loggedUser, date: date };
       this.props.onSendMessage(message);

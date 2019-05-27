@@ -5,8 +5,7 @@ export class Connection extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      nickname: '',
-      socket: socketIOClient('http://localhost:5000')
+      nickname: ''
     };
 
     this.handleLogin = this.handleLogin.bind(this);
@@ -41,10 +40,14 @@ export class Connection extends React.Component {
           this.setState({ nickname: '' });
         } else {
           //navigate to room
-          this.props.history.push('/rooms');
+          this.props.history.push({
+            pathname: '/rooms',
+            login: {
+              user: data.user
+            }
+          });
         }
       })
-      // .then(response => response.body.getReader())
       .catch(error => {
         console.log('Request failed', error);
       });
