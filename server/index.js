@@ -8,6 +8,7 @@ const path = require('path');
 const port = process.env.PORT || 5000;
 const MessageModel = require('./schemas/messageSchema');
 const UserModel = require('./schemas/userSchema');
+const ChannelModel = require('./schemas/channelSchema');
 const database = require('./database/database');
 const bodyParser = require('body-parser');
 // const rc = io.of('/room-choice');
@@ -44,8 +45,6 @@ app.get('/', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'build/index.html'));
 // });
 
-let channels = [];
-
 // get full userlists
 app.get('/users', (req, res) => {
   getFullUsersList()
@@ -73,12 +72,17 @@ app.post('/user', (req, res) => {
 
 // send channels list to client
 app.get('/rooms', (req, res) => {
-  res.json({ channels: channels });
+  getChannels()
+    .then(channels => {
+      res.json({ channels: channels });
+    })
+    .catch(error => {
+      res.json(error);
+    });
 });
 
-let messages = [];
 let room;
-// when connecting to room-choice event
+// when connecting
 io.on('connection', socket => {
   socket.join('home-room');
   let currentUser;
@@ -90,7 +94,7 @@ io.on('connection', socket => {
   socket.on('create-channel', usersAndChannel => {
     socket.leave('home-room');
     room = usersAndChannel.channelName;
-    channels = [...channels, room];
+    saveChannel(room);
     socket.join(room);
     console.log(usersAndChannel);
     changeUserChannel(usersAndChannel.self, room);
@@ -129,25 +133,9 @@ io.on('connection', socket => {
   // });
 
   socket.on('send-message', message => {
+    let room = message.channel.channelName;
     let messageToDispatch = message;
-
-    let messageToDb = new MessageModel({
-      user: message.user,
-      text: message.text,
-      date: message.date,
-      channel: room
-    });
-
-    console.log(messageToDb);
-    messageToDb
-      .save()
-      .then(doc => {
-        console.log(doc);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-
+    saveMessage(message);
     // messages = [...messages, messageToDispatch];
     io.to(room).emit('dispatch-message', messageToDispatch);
     // if (messages.length > 30) {
@@ -241,11 +229,11 @@ setNicknameOnLogin = nickname => {
         userExist = user;
 
         if (userExist.length === 0) {
-          const saveUser = new UserModel.model({ nickname: nickname, channel: '' });
+          const channelModel = new ChannelModel.model({ channelName: 'default-channel' });
+          const saveUser = new UserModel.model({ nickname: nickname, channel: channelModel });
           saveUser.save((err, user) => {
             if (err) {
               console.log(err);
-              return handleError(err);
             }
             console.log('user saved', user);
             userExist = user;
@@ -256,7 +244,7 @@ setNicknameOnLogin = nickname => {
         }
       })
       .catch(error => {
-        return handleError(error);
+        console.log(error);
       });
   });
 };
@@ -276,7 +264,7 @@ getFullUsersList = () => {
         }
       })
       .catch(error => {
-        return handleError(error);
+        console.log(error);
       });
   });
 };
@@ -299,7 +287,7 @@ deleteConnectedUser = user => {
         }
       })
       .catch(error => {
-        return handleError(error);
+        console.log(error);
       });
   });
 };
@@ -308,8 +296,9 @@ deleteConnectedUser = user => {
  * Change user channel when joining/creating new channel
  */
 changeUserChannel = (user, room) => {
+  const channelModel = new ChannelModel.model({ channelName: room });
   UserModel.model
-    .findOneAndUpdate({ nickname: user.nickname }, { channel: room })
+    .findOneAndUpdate({ nickname: user.nickname }, { channel: channelModel })
     .then(user => {
       console.log(user);
     })
@@ -340,6 +329,7 @@ getUsersInChannel = room => {
   });
 };
 
+// get messages list in selected channem
 getMessagesInChannel = room => {
   return new Promise((resolve, reject) => {
     MessageModel.find({ channel: room }).then(messages => {
@@ -352,6 +342,59 @@ getMessagesInChannel = room => {
     });
   });
 };
+
+getChannels = () => {
+  return new Promise((resolve, reject) => {
+    ChannelModel.model
+      .find()
+      .then(channels => {
+        if (channels !== undefined) {
+          resolve(channels);
+        } else {
+          reject('No channels !');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  });
+};
+
+// put message into database
+saveMessage = message => {
+  let messageToDb = new MessageModel({
+    user: message.user,
+    text: message.text,
+    date: message.date,
+    channel: message.channelName
+  });
+
+  messageToDb
+    .save()
+    .then(doc => {
+      console.log(doc);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+// put new channel into database
+saveChannel = room => {
+  const channelToSave = new ChannelModel.model({
+    channelName: room
+  });
+
+  channelToSave
+    .save()
+    .then(channel => {
+      console.log(channel);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 server.listen(port, () => {
   console.log(`server listening to port ${port}`);
 });

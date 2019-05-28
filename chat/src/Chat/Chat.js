@@ -20,7 +20,8 @@ export class Chat extends React.Component {
       users: [],
       logged: false,
       errorMessage: '',
-      isWriting: false
+      isWriting: false,
+      channelName: this.props.location.login.channelName
     };
 
     this.handleMessage = this.handleMessage.bind(this);
@@ -74,9 +75,9 @@ export class Chat extends React.Component {
       if (userDisconnected !== null) {
         let userLeft = `${userDisconnected.nickname} has disconnected !`;
         this.setState({ user: userLeft });
-        this.setState({
-          users: this.state.users.filter(user => user.nickname !== userLeft)
-        });
+        // this.setState({
+        //   users: this.state.users.filter(user => user.nickname !== userLeft)
+        // });
         this.state.socket.emit('users-list', this.state.users);
       }
     });
@@ -89,6 +90,7 @@ export class Chat extends React.Component {
   }
 
   handleMessage(message) {
+    message['channelName'] = this.state.channelName;
     console.log(message);
     this.state.socket.emit('send-message', message);
   }

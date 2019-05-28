@@ -88,7 +88,8 @@ export class Rooms extends React.Component {
     this.props.history.push({
       pathname: '/chat',
       login: {
-        self: this.state.currentUser
+        self: this.state.currentUser,
+        channelName: this.state.channelName
       }
     });
 
@@ -118,7 +119,7 @@ export class Rooms extends React.Component {
         return response.json();
       })
       .then(data => {
-        console.log(data);
+        console.log(data.channels);
         if (data.channels.length > 0) {
           this.setState({
             displayChannels: true,
@@ -132,16 +133,17 @@ export class Rooms extends React.Component {
   }
 
   // join selected channel
-  joinChannel(channel) {
+  joinChannel(channelName) {
     this.props.history.push({
       pathname: '/chat',
       login: {
-        self: this.state.currentUser
+        self: this.state.currentUser,
+        channelName: this.state.channelName
       }
     });
     console.log(this.props.location.login.user.nickname);
     const user = this.props.location.login.user;
-    this.state.socket.emit('join-channel', { channelName: channel, user: user });
+    this.state.socket.emit('join-channel', { channelName: channelName, user: user });
   }
 
   componentWillUnmount() {
@@ -176,7 +178,7 @@ export class Rooms extends React.Component {
         {this.state.channelsList.map((channel, index) => {
           return (
             <li key={index}>
-              <button onClick={this.joinChannel.bind(this, channel)}>{channel}</button>
+              <button onClick={this.joinChannel.bind(this, channel)}>{channel.channelName}</button>
             </li>
           );
         })}
