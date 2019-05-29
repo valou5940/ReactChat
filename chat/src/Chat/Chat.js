@@ -9,11 +9,11 @@ export class Chat extends React.Component {
     super(props);
 
     this.state = {
-      messagesArray: [],
+      messagesArray: this.props.location.messages ? this.props.location.messages : [],
       socket: this.props.socket,
       loggedUser: this.props.location.login.self,
       user: '',
-      users: [],
+      users: this.props.location.users ? this.props.location.users : [],
       errorMessage: '',
       isWriting: false,
       channelName: this.props.location.login.channelName
@@ -60,10 +60,10 @@ export class Chat extends React.Component {
       console.log(user);
       let userConnect = `${user.nickname} has connected !`;
       this.setState({ user: userConnect });
-      // this.setState(prevState => ({
-      //   users: [...prevState.users, user]
-      // }));
-      // this.state.socket.emit('users-list', this.state.users);
+      this.setState(prevState => ({
+        users: [...prevState.users, user]
+      }));
+      this.state.socket.emit('users-list', this.state.users);
     });
 
     this.state.socket.on('user-disconnected', userDisconnected => {

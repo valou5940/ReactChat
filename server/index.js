@@ -83,6 +83,28 @@ app.post('/user/channel', (req, res) => {
     });
 });
 
+app.get('/users/:channel', (req, res) => {
+  const room = req.params.channel;
+  getUsersInChannel(room)
+    .then(users => {
+      res.json({ users: users });
+    })
+    .catch(error => {
+      res.json(error);
+    });
+});
+
+app.get('/messages/:channel', (req, res) => {
+  const room = req.params.channel;
+  getMessagesInChannel(room)
+    .then(messages => {
+      res.json({ messages: messages });
+    })
+    .catch(error => {
+      res.json(error);
+    });
+});
+
 // send channels list to client
 app.get('/rooms', (req, res) => {
   getChannels()
@@ -94,6 +116,7 @@ app.get('/rooms', (req, res) => {
     });
 });
 
+app.get('/messages/:channel');
 // when connecting
 io.on('connection', socket => {
   socket.join('home-room');
@@ -122,22 +145,23 @@ io.on('connection', socket => {
     socket.leave('home-room');
     const room = user.channel.channelName;
     console.log('ROOM VALUE : ', room);
+    socket.join(room);
+    // console.log('USER LIST IN CHANNEL ', users);
+    // io.to(room).emit('users-list', users);
+    io.to(room).emit('user-joined', user);
     // fetch all users on the channel and emit it to the room
-    getUsersInChannel(room)
-      .then(users => {
-        socket.join(room);
-        console.log('USER LIST IN CHANNEL ', users);
-        io.to(room).emit('users-list', users);
-        io.to(room).emit('user-joined', user);
-      })
-      .then(() => {
-        getMessagesInChannel(room).then(messages => {
-          io.to(room).emit('dispatch-messages', messages);
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    // getUsersInChannel(room)
+    //   .then(users => {
+
+    //   })
+    //   .then(() => {
+    //     getMessagesInChannel(room).then(messages => {
+    //       io.to(room).emit('dispatch-messages', messages);
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
   });
 
   socket.on('send-message', message => {

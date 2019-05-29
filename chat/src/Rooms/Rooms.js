@@ -169,8 +169,54 @@ export class Rooms extends React.Component {
     });
   }
 
+  getChannelUserList(room) {
+    return new Promise((resolve, reject) => {
+      fetch('http://localhost:5000/users/' + room, {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          console.log('USERS FETCHED', data.users);
+          resolve(data.users);
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
+
+  getChannelMessagesList(room) {
+    return new Promise((resolve, reject) => {
+      fetch('http://localhost:5000/messages/' + room, {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          console.log('MESSAGES FETCHED', data.messages);
+          resolve(data.messages);
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
+
   // join selected channel
   joinChannel(channel) {
+    let messagesInChannel;
+    let usersInChannel;
     console.log('channel name:', channel);
     console.log('user : ', this.state.currentUser);
     this.setUserChannel(this.state.currentUser, channel.channelName)
@@ -179,19 +225,24 @@ export class Rooms extends React.Component {
           currentUser: user,
           channelName: user.channel.channelName
         });
-
-        this.props.history.push({
-          pathname: '/chat',
-          login: {
-            self: this.state.currentUser,
-            channelName: this.state.channelName
-          }
+        this.getChannelUserList(user.channel.channelName).then(users => (usersInChannel = users));
+        this.getChannelMessagesList(user.channel.channelName).then(messages => {
+          messagesInChannel = messages;
         });
       })
       .catch(error => {
         console.log(error);
       })
       .finally(() => {
+        this.props.history.push({
+          pathname: '/chat',
+          login: {
+            self: this.state.currentUser,
+            channelName: this.state.channelName
+          },
+          messages: messagesInChannel,
+          users: usersInChannel
+        });
         this.state.socket.emit('join-channel', this.state.currentUser);
       });
   }
