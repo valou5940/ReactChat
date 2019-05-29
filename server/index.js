@@ -220,13 +220,10 @@ io.on('connection', socket => {
         console.log('user left ?', user);
         io.emit('user-left', user);
         io.to(room).emit('user-disconnected', user);
-        database.connection.close();
-        // currentUser = null;
-      })
-      .then(() => {
         getUsersInChannel(room).then(users => {
           io.to(room).emit('users-list', users);
         });
+        // currentUser = null;
       })
       .catch(error => {
         console.log(error);

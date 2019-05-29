@@ -19,6 +19,7 @@ export class Chat extends React.Component {
       channelName: this.props.location.login.channelName
     };
 
+    console.log(this.props);
     this.handleMessage = this.handleMessage.bind(this);
 
     this.state.socket.on('users-list', users => {

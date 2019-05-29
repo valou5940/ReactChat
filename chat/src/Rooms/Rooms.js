@@ -225,15 +225,30 @@ export class Rooms extends React.Component {
           currentUser: user,
           channelName: user.channel.channelName
         });
-        this.getChannelUserList(user.channel.channelName).then(users => (usersInChannel = users));
-        this.getChannelMessagesList(user.channel.channelName).then(messages => {
-          messagesInChannel = messages;
+
+        return new Promise((resolve, reject) => {
+          this.getChannelUserList(user.channel.channelName)
+            .then(users => {
+              usersInChannel = users;
+            })
+            .catch(error => {
+              console.log(error);
+            })
+            .finally(() => {
+              this.getChannelMessagesList(user.channel.channelName)
+                .then(messages => {
+                  messagesInChannel = messages;
+                  resolve(messagesInChannel);
+                })
+                .catch(error => {
+                  console.log(error);
+                  reject(error);
+                });
+            });
         });
       })
-      .catch(error => {
-        console.log(error);
-      })
-      .finally(() => {
+      .then(() => {
+        console.log('message in channel ', messagesInChannel);
         this.props.history.push({
           pathname: '/chat',
           login: {
@@ -244,6 +259,9 @@ export class Rooms extends React.Component {
           users: usersInChannel
         });
         this.state.socket.emit('join-channel', this.state.currentUser);
+      })
+      .catch(error => {
+        console.log(error);
       });
   }
 
