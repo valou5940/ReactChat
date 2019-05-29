@@ -130,13 +130,14 @@ io.on('connection', socket => {
         io.to(room).emit('users-list', users);
         io.to(room).emit('user-joined', user);
       })
+      .then(() => {
+        getMessagesInChannel(room).then(messages => {
+          io.to(room).emit('dispatch-messages', messages);
+        });
+      })
       .catch(error => {
         console.log(error);
       });
-
-    getMessagesInChannel(room).then(messages => {
-      io.to(room).emit('dispatch-messages', messages);
-    });
   });
 
   socket.on('send-message', message => {
@@ -338,7 +339,7 @@ getMessagesInChannel = room => {
   return new Promise((resolve, reject) => {
     MessageModel.find({ 'user.channel.channelName': room }).then(messages => {
       if (messages !== undefined) {
-        console.log(messages);
+        console.log('MESSAGES IN CHANNEL ', messages);
         resolve(messages);
       } else {
         reject('No Messages');
