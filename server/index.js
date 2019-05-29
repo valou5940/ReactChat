@@ -110,7 +110,6 @@ io.on('connection', socket => {
     saveChannel(room);
     socket.join(room);
     console.log(usersAndChannel);
-    // changeUserChannel(usersAndChannel.self, usersAndChannel.channel);
   });
 
   // when user joining channels list, add this user to every clients
@@ -120,8 +119,8 @@ io.on('connection', socket => {
   });
 
   socket.on('join-channel', user => {
-    room = user.channel;
-    console.log(room);
+    room = user.channel.channelName;
+    console.log('ROOM VALUE : ', room);
     // fetch all users on the channel and emit it to the room
     getUsersInChannel(room)
       .then(users => {
@@ -139,23 +138,13 @@ io.on('connection', socket => {
     });
   });
 
-  // socket.on('users-list', users => {
-  //   socket.to(room).emit('users-list', users);
-  // });
-
   socket.on('send-message', message => {
+    console.log('MESSAGE TO BROADCAST ', message);
     let room = message.user.channel.channelName;
     let messageToDispatch = message;
     saveMessage(message);
     console.log('room to send message :', room);
-    // messages = [...messages, messageToDispatch];
     io.to(room).emit('dispatch-message', messageToDispatch);
-    // if (messages.length > 30) {
-    //   setTimeout(() => {
-    //     messages = messages.slice(20, 30);
-    //     io.emit('dispatch-messages', messages);
-    //   }, 5000);
-    // }
   });
 
   // if (usersList.find(user => user.nickname === currentUser && user.logged === true)) {
@@ -198,15 +187,6 @@ io.on('connection', socket => {
   // });
 
   socket.on('disconnect', () => {
-    // if (currentUser !== null && currentUser !== undefined) {
-    //   users = users.filter(user => user.nickname !== currentUser);
-    //   io.emit('user-disconnected', currentUser);
-    //   console.log(currentUser + ' disconnected');
-    // }
-    // if (users.length > 0) {
-    //   io.emit('users-list', users);
-    // }
-
     // delete user from database when disconnects
     deleteConnectedUser(currentUser)
       .then(user => {
@@ -340,7 +320,7 @@ changeUserChannel = (user, channelName) => {
 getUsersInChannel = room => {
   return new Promise((resolve, reject) => {
     UserModel.model
-      .find({ 'channel.channelName': room.channelName })
+      .find({ 'channel.channelName': room })
       .then(users => {
         console.log('USER in channel', users);
         if (users !== undefined) {
@@ -355,10 +335,10 @@ getUsersInChannel = room => {
   });
 };
 
-// get messages list in selected channem
+// get messages list in selected channel
 getMessagesInChannel = room => {
   return new Promise((resolve, reject) => {
-    MessageModel.find({ channel: room }).then(messages => {
+    MessageModel.find({ 'user.channel.channelName': room }).then(messages => {
       if (messages !== undefined) {
         console.log(messages);
         resolve(messages);
@@ -369,6 +349,7 @@ getMessagesInChannel = room => {
   });
 };
 
+//get channels list
 getChannels = () => {
   return new Promise((resolve, reject) => {
     ChannelModel.model
@@ -392,8 +373,7 @@ saveMessage = message => {
   let messageToDb = new MessageModel({
     user: message.user,
     text: message.text,
-    date: message.date,
-    channel: message.channel
+    date: message.date
   });
 
   messageToDb

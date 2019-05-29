@@ -6,8 +6,7 @@ let channel = require('./channelSchema');
 const messageSchema = new mongoose.Schema({
   user: user.userSchema,
   text: String,
-  date: Date,
-  channel: channel.channelSchema
+  date: Date
 });
 
 module.exports = mongoose.model('message', messageSchema);

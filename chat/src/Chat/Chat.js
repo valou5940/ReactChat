@@ -1,10 +1,6 @@
 import React from 'react';
 import { MessagesBoard } from './Board/MessagesBoard';
 import { Send } from './Board/Send';
-import socketIOClient from 'socket.io-client';
-import { Connection } from '../Connection/Connection';
-import { Smile } from 'react-feather';
-import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { Users } from './Board/Users/Users';
 
@@ -89,13 +85,10 @@ export class Chat extends React.Component {
   }
 
   handleMessage(message) {
-    // message['channelName'] = this.state.channelName;
-    console.log(message);
     this.state.socket.emit('send-message', message);
   }
 
   handleIsWriting(isWriting) {
-    console.log(isWriting);
     this.setState({ isWriting: isWriting });
     this.state.socket.emit('is-writing', {
       nickname: this.state.loggedUser,
