@@ -94,10 +94,10 @@ app.get('/rooms', (req, res) => {
     });
 });
 
-let room;
 // when connecting
 io.on('connection', socket => {
   socket.join('home-room');
+
   let currentUser;
 
   //connect to database
@@ -106,7 +106,7 @@ io.on('connection', socket => {
   // create channel
   socket.on('create-channel', usersAndChannel => {
     socket.leave('home-room');
-    room = usersAndChannel.channelName;
+    const room = usersAndChannel.channelName;
     saveChannel(room);
     socket.join(room);
     console.log(usersAndChannel);
@@ -119,7 +119,8 @@ io.on('connection', socket => {
   });
 
   socket.on('join-channel', user => {
-    room = user.channel.channelName;
+    socket.leave('home-room');
+    const room = user.channel.channelName;
     console.log('ROOM VALUE : ', room);
     // fetch all users on the channel and emit it to the room
     getUsersInChannel(room)
@@ -140,8 +141,8 @@ io.on('connection', socket => {
 
   socket.on('send-message', message => {
     console.log('MESSAGE TO BROADCAST ', message);
-    let room = message.user.channel.channelName;
-    let messageToDispatch = message;
+    const room = message.user.channel.channelName;
+    const messageToDispatch = message;
     saveMessage(message);
     console.log('room to send message :', room);
     io.to(room).emit('dispatch-message', messageToDispatch);
@@ -190,6 +191,7 @@ io.on('connection', socket => {
     // delete user from database when disconnects
     deleteConnectedUser(currentUser)
       .then(user => {
+        const room = user.channel.channelName;
         console.log('user left ?', user);
         io.emit('user-left', user);
         io.to(room).emit('user-disconnected', user);
@@ -276,14 +278,10 @@ deleteConnectedUser = user => {
       .findOneAndDelete({ nickname: user.nickname })
       .then(userLeft => {
         console.log(`user ${userLeft} removed`);
-        if (userLeft !== undefined) {
-          resolve(userLeft);
-        } else {
-          reject("User does'nt exist");
-        }
+        resolve(userLeft);
       })
       .catch(error => {
-        console.log(error);
+        reject("User does'nt exist", error);
       });
   });
 };
