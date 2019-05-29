@@ -85,19 +85,31 @@ export class Rooms extends React.Component {
 
   // create new channel with invited users
   handleInviteAndCreate() {
-    this.props.history.push({
-      pathname: '/chat',
-      login: {
-        self: this.state.currentUser,
-        channelName: this.state.channelName
-      }
-    });
+    this.setUserChannel(this.state.currentUser, this.state.channelName)
+      .then(user => {
+        this.setState({
+          currentUser: user,
+          channelName: user.channel.channelName
+        });
 
-    this.state.socket.emit('create-channel', {
-      users: this.state.usersInvited,
-      channelName: this.state.channelName,
-      self: this.state.currentUser
-    });
+        this.props.history.push({
+          pathname: '/chat',
+          login: {
+            self: this.state.currentUser,
+            channelName: this.state.channelName
+          }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        this.state.socket.emit('create-channel', {
+          users: this.state.usersInvited,
+          channelName: this.state.channelName,
+          self: this.state.currentUser
+        });
+      });
   }
 
   // set channel name
@@ -132,18 +144,56 @@ export class Rooms extends React.Component {
       });
   }
 
-  // join selected channel
-  joinChannel(channelName) {
-    this.props.history.push({
-      pathname: '/chat',
-      login: {
-        self: this.state.currentUser,
-        channelName: this.state.channelName
-      }
+  setUserChannel(user, channel) {
+    console.log('user ', user);
+    console.log('channel : ', channel);
+    return new Promise((resolve, reject) => {
+      fetch('http://localhost:5000/user/channel', {
+        method: 'post',
+        body: JSON.stringify({ user: user, channel: channel }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          console.log('USER FETCHED', data.user);
+          resolve(data.user);
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
     });
-    console.log(this.props.location.login.user.nickname);
-    const user = this.props.location.login.user;
-    this.state.socket.emit('join-channel', { channelName: channelName, user: user });
+  }
+
+  // join selected channel
+  joinChannel(channel) {
+    console.log('channel name:', channel);
+    console.log('user : ', this.state.currentUser);
+    this.setUserChannel(this.state.currentUser, channel.channelName)
+      .then(user => {
+        this.setState({
+          currentUser: user,
+          channelName: user.channel.channelName
+        });
+
+        this.props.history.push({
+          pathname: '/chat',
+          login: {
+            self: this.state.currentUser,
+            channelName: this.state.channelName
+          }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        this.state.socket.emit('join-channel', this.state.currentUser);
+      });
   }
 
   componentWillUnmount() {

@@ -18,7 +18,6 @@ export class Chat extends React.Component {
       loggedUser: this.props.location.login.self,
       user: '',
       users: [],
-      logged: false,
       errorMessage: '',
       isWriting: false,
       channelName: this.props.location.login.channelName
@@ -90,7 +89,7 @@ export class Chat extends React.Component {
   }
 
   handleMessage(message) {
-    message['channelName'] = this.state.channelName;
+    // message['channelName'] = this.state.channelName;
     console.log(message);
     this.state.socket.emit('send-message', message);
   }
