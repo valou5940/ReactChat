@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
-const mongoDB = 'mongodb+srv://Valentin:nayla@cluster0-vnytu.mongodb.net/test?retryWrites=true';
+const mongoDB =
+  'mongodb+srv://Valentin:nayla@cluster0-vnytu.mongodb.net/napichat-dev?retryWrites=true';
 
 class Database {
   constructor() {

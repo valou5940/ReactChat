@@ -11,7 +11,6 @@ const UserModel = require('./schemas/userSchema');
 const ChannelModel = require('./schemas/channelSchema');
 const database = require('./database/database');
 const bodyParser = require('body-parser');
-// const rc = io.of('/room-choice');
 
 //CORS middleware
 var allowCrossDomain = function(req, res, next) {
@@ -24,29 +23,27 @@ var allowCrossDomain = function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // Use middleware to set the default Content-Type
-app.use(function(req, res, next) {
-  res.header('Content-Type', 'application/json');
-  next();
-});
-// app.use(express.cookieParser());
-// app.use(express.session({ secret: 'cool beans' }));
-// app.use(express.methodOverride());
+// app.use(function(req, res, next) {
+//   res.header('Content-Type', 'application/json');
+//   next();
+// });
 app.use(allowCrossDomain);
-// app.use(app.router);
-app.use(express.static(__dirname + '/public'));
+// app.use(express.static(__dirname + '/public'));
 
-app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/chat/public/index.html`);
-});
-
-// app.use(express.static(__dirname));
-// app.use(express.static(path.join(__dirname, 'build')));
 // app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'build/index.html'));
+//   res.sendFile(`${__dirname}/chat/public/index.html`);
 // });
 
+// app.use(express.static(path.join(__dirname, 'chat/build')));
+// app.use(express.static(path.join(__dirname, 'chat/build')));
+// app.use(express.static(path.join(__dirname, 'chat/build/static')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/chat/public/index.html'));
+});
+
 // get full userlists
-app.get('/users', (req, res) => {
+app.get('/api/users', (req, res) => {
   getFullUsersList()
     .then(users => {
       console.log('Full users list', users);
@@ -58,7 +55,7 @@ app.get('/users', (req, res) => {
 });
 
 // save user into db
-app.post('/user', (req, res) => {
+app.post('/api/user', (req, res) => {
   console.log(req.body.nickname);
   setNicknameOnLogin(req.body.nickname)
     .then(user => {
@@ -71,7 +68,7 @@ app.post('/user', (req, res) => {
 });
 
 //change user channel
-app.post('/user/channel', (req, res) => {
+app.post('/api/user/channel', (req, res) => {
   const user = req.body.user;
   const channel = req.body.channel;
   changeUserChannel(user, channel)
@@ -83,7 +80,7 @@ app.post('/user/channel', (req, res) => {
     });
 });
 
-app.get('/users/:channel', (req, res) => {
+app.get('/api/users/:channel', (req, res) => {
   const room = req.params.channel;
   getUsersInChannel(room)
     .then(users => {
@@ -94,7 +91,7 @@ app.get('/users/:channel', (req, res) => {
     });
 });
 
-app.get('/messages/:channel', (req, res) => {
+app.get('/api/messages/:channel', (req, res) => {
   const room = req.params.channel;
   getMessagesInChannel(room)
     .then(messages => {
@@ -106,7 +103,7 @@ app.get('/messages/:channel', (req, res) => {
 });
 
 // send channels list to client
-app.get('/rooms', (req, res) => {
+app.get('/api/rooms', (req, res) => {
   getChannels()
     .then(channels => {
       res.json({ channels: channels });
@@ -116,12 +113,32 @@ app.get('/rooms', (req, res) => {
     });
 });
 
-app.get('/messages/:channel');
 // when connecting
 io.on('connection', socket => {
-  socket.join('home-room');
-
   let currentUser;
+  socket.on('register', data => {
+    console.log('data on register ', data);
+    if (data !== null) {
+      //get UID in localstorage
+      getUserById(data)
+        .then(user => {
+          console.log('USER IN CACHE', user);
+          if (user !== null) {
+            const room = user.channel.channelName;
+            // currentUser = user;
+            user['disconnected'] = false;
+            socket.emit('reconnect', user);
+            socket.join(room);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      //timed out, create new player
+      socket.join('home-room');
+    }
+  });
 
   //connect to database
   database.connection;
@@ -213,24 +230,44 @@ io.on('connection', socket => {
   // });
 
   socket.on('disconnect', () => {
+    currentUser['disconnected'] = true;
     // delete user from database when disconnects
-    deleteConnectedUser(currentUser)
-      .then(user => {
-        const room = user.channel.channelName;
-        console.log('user left ?', user);
-        io.emit('user-left', user);
-        io.to(room).emit('user-disconnected', user);
-        getUsersInChannel(room).then(users => {
-          io.to(room).emit('users-list', users);
-        });
-        // currentUser = null;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    setTimeout(function() {
+      if (currentUser['disconnected']) {
+        deleteConnectedUser(currentUser)
+          .then(user => {
+            const room = user.channel.channelName;
+            console.log('user left ?', user);
+            io.emit('user-left', user);
+            io.to(room).emit('user-disconnected', user);
+            getUsersInChannel(room).then(users => {
+              io.to(room).emit('users-list', users);
+            });
+            // currentUser = null;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    }, 10000);
   });
 });
 
+/**
+ * get user by id
+ */
+getUserById = id => {
+  return new Promise((resolve, reject) => {
+    UserModel.model
+      .findById(id)
+      .then(user => {
+        resolve(user);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
 /*
  * on new user login, check if nickname is available
  */
@@ -336,7 +373,6 @@ changeUserChannel = (user, channelName) => {
 /*
  * get users list on the channel
  */
-
 getUsersInChannel = room => {
   return new Promise((resolve, reject) => {
     UserModel.model
